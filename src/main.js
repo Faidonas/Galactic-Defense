@@ -12,7 +12,8 @@ function preload() {
   playerImage = loadImage('assets/images/player_ship.png');
   enemyImage = loadImage('assets/images/enemy_ship.png');
   explosionImage = loadImage('assets/images/explosions.png');
-  
+  bulletImage = loadImage('assets/images/bullet.png');
+ 
   laserSound = loadSound('assets/sounds/laser_shot.wav');
   explosionSound = loadSound('assets/sounds/explosion_sound.wav');
   bgMusic = loadSound('assets/sounds/background_music.wav');

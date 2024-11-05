@@ -3,13 +3,13 @@ class Bullet {
       this.x = x;
       this.y = y;
       this.size = 30;
-      this.speed = 1;
+      this.speed = 1.5;
       this.isHit = false; // Track if the enemy was hit
     }
   
     update() {
       if (!this.isHit) {
-        this.y += this.speed;
+        this.y -= this.speed;
       }
     }
   
@@ -17,7 +17,7 @@ class Bullet {
       if (this.isHit) {
         image(explosionImage, this.x, this.y, this.size, this.size);
       } else {
-        image(enemyImage, this.x, this.y, this.size, this.size);
+        image(bulletImage, this.x, this.y, this.size, this.size);
       }
     }
   
