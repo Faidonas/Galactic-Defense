@@ -9,7 +9,6 @@
 - [Gameplay Instructions](#gameplay-instructions)
 - [Controls](#controls)
 - [Project Setup](#project-setup)
-- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -46,3 +45,8 @@ Your mission is to defend Earth from alien invaders by shooting down as many ene
    ```bash
    git clone https://github.com/yourusername/galactic-defense.git
 2. Open index.html in your browser to play the game locally.
+### Running the Game
+Simply open index.html in a web browser. The game should start running immediately. Use the keyboard controls to navigate and shoot!
+
+## License
+This project is licensed under the MIT License. See the LICENSE file for details.
