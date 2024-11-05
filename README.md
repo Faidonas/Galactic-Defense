@@ -1,4 +1,4 @@
-# Galactic Defense: A Retro-Style Arcade Shooter Game
+# 🚀 Galactic Defense: A Retro-Style Arcade Shooter Game 👾💥
 
 **Galactic Defense** is a retro arcade shooter game built with p5.js, where players defend Earth against waves of alien invaders. As a space pilot, you must dodge enemy attacks, shoot down alien ships, and survive increasingly difficult waves of enemies. Test your reflexes, improve your skills, and aim for a high score!
 
