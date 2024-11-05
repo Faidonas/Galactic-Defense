@@ -1,4 +1,4 @@
-# Galactic Defense: A Retro-Style Arcade Shooter Game
+# 🚀 Galactic Defense: A Retro-Style Arcade Shooter Game 👾💥
 
 **Galactic Defense** is a retro arcade shooter game built with p5.js, where players defend Earth against waves of alien invaders. As a space pilot, you must dodge enemy attacks, shoot down alien ships, and survive increasingly difficult waves of enemies. Test your reflexes, improve your skills, and aim for a high score!
 
@@ -9,8 +9,7 @@
 - [Gameplay Instructions](#gameplay-instructions)
 - [Controls](#controls)
 - [Project Setup](#project-setup)
-- [Contributing](#contributing)
-- [License](#license)
+- [Contributors](#contributors)
 
 ---
 
@@ -46,3 +45,9 @@ Your mission is to defend Earth from alien invaders by shooting down as many ene
    ```bash
    git clone https://github.com/yourusername/galactic-defense.git
 2. Open index.html in your browser to play the game locally.
+### Running the Game
+- Simply open index.html in a web browser. The game should start running immediately. Use the keyboard controls to navigate and shoot!
+
+## Contributors
+- [Faidon Azariadis](https://github.com/Faidonas) 
+- [Panos Moschos](https://github.com/panosmoschos)
