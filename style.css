@@ -1,0 +1,8 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* Disable scrollbars */
+    padding: 0;
+    width: 100%;
+  }
+  

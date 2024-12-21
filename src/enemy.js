@@ -3,7 +3,7 @@ class Enemy {
       this.x = x;
       this.y = y;
       this.size = 30;
-      this.speed = 1;
+      this.speed = 1.5;
     }
   
     update() {
@@ -16,11 +16,12 @@ class Enemy {
     }
   
     collides(bullet) {
+      const hitboxPadding = 10; // Adjust this value to make the hitbox larger
       return (
-        bullet.x > this.x &&
-        bullet.x < this.x + this.size &&
-        bullet.y > this.y &&
-        bullet.y < this.y + this.size
+        bullet.x > this.x - hitboxPadding &&
+        bullet.x < this.x + this.size + hitboxPadding &&
+        bullet.y > this.y - hitboxPadding &&
+        bullet.y < this.y + this.size + hitboxPadding
       );
     }
   }
