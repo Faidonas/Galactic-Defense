@@ -2,7 +2,7 @@ class Enemy {
     constructor(x, y) {
       this.x = x;
       this.y = y;
-      this.size = 30;
+      this.size = 40;
       this.speed = 1.5;
     }
   

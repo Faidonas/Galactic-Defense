@@ -2,6 +2,7 @@ let player;
 let enemies = [];
 let bullets = [];
 let stars = [];
+let hearts = [];
 let level = 1; // Keep track of the current battle level within battle.js
 let score = 0;
 let lives = 5; // Keep lives local to battle.js
@@ -18,6 +19,7 @@ function setupBattle(level) {
   enemies = [];
   bullets = [];
   stars = [];
+  hearts = [];
 
   // Reset score and lives for the new battle
   score = 0;
@@ -28,6 +30,8 @@ function setupBattle(level) {
     stars.push(new Star());
   }
 
+ 
+  
   spawnEnemies(level); // Spawn enemies based on level
 }
 
@@ -38,7 +42,27 @@ function drawBattleScreen() {
     gameOver(); // Show game over screen
   } else {
     // Continue normal battle flow
-    background(10, 10, 30);
+    image(backgroundimage, 0, 0, width, height); // Display the background
+
+    spawnHeart();
+    
+    // Update and display hearts
+    for (let i = hearts.length - 1; i >= 0; i--) {
+      hearts[i].update();
+      hearts[i].display();
+
+      // Check if the player catches the heart
+      if (hearts[i].isCaught(player)) {
+        hearts.splice(i, 1); // Remove the heart
+        lives = min(lives + 1, 10); // Add a life, capped at 5
+        //catchHeartSound.play(); // Play a sound effect (optional)
+      }
+
+      // Remove hearts that fall off the screen
+      if (hearts[i] && hearts[i].y > height) {
+        hearts.splice(i, 1);
+      }
+    }
 
     // Update and display stars (background)
     for (let star of stars) {
@@ -136,6 +160,14 @@ function handlePauseSelection() {
   }
 }
 
+function spawnHeart() {
+  if (random(1) < 0.01) { // 1% chance per frame to spawn a heart
+    let x = random(50, width - 50); // Random X position
+    hearts.push(new Heart(x, -20)); // Spawn the heart slightly above the screen
+  }
+}
+
+
 function mousePressed() {
   if (isGameOver) {
     // Check if player clicked on one of the options
@@ -170,10 +202,7 @@ function handleGameOverSelection() {
   if (selectedGameOverOption === 0) {
     // Retry the current level
     setupBattle(level); // Reset and start the current level again
-    screen = "battle"; // Switch to the battle screen
     isGameOver = false; // Reset game over state
-    lives = 5; // Reset lives
-    score = 0; // Reset score
     loop(); // Resume the game loop
   } else if (selectedGameOverOption === 1) {
     // Go back to the map screen

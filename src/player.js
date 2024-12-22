@@ -2,7 +2,7 @@ class Player {
     constructor() {
       this.x = width / 2;
       this.y = height - 50;
-      this.size = 30;
+      this.size = 50;
       this.speed = 5;
     }
   

@@ -12,8 +12,10 @@ function preload() {
   playerImage = loadImage('assets/images/player_ship.png');
   enemyImage = loadImage('assets/images/enemy_ship.png');
   explosionImage = loadImage('assets/images/explosions.png');
-  bulletImage = loadImage('assets/images/bullet.png');
+  bulletImage = loadImage('assets/images/heart.png');
   heartImage = loadImage('assets/images/heart.png');
+  backgroundimage = loadImage("assets/images/bg5.jpg");
+  //mapImage = loadImage("path-to-your-map-image.jpg"); 
  
   laserSound = loadSound('assets/sounds/laser_shot.wav');
   explosionSound = loadSound('assets/sounds/explosion_sound.wav');
@@ -22,6 +24,10 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight); // Adjust the canvas size dynamically
 }
 
 function draw() {
@@ -40,5 +46,20 @@ function draw() {
     if (isGameOver) {
       gameOver(); // Display the game over menu
     }
+}
+
+function keyPressed() {
+  if (screen === "battle") {
+    if (key === ' ') {
+      keyPressedBattle();
+    }
+    if (keyCode === ESCAPE) {
+      togglePause(); // Toggle pause when ESC is pressed
+    }
+  } else if (screen === "map") {
+    if (key === 'Enter') {
+      startBattle(currentLevel); // Start the current level on Enter
+    }
+  }
 }
   

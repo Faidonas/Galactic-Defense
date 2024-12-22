@@ -26,24 +26,6 @@ function drawMapScreen() {
       }
     }
   }
-  
-  
-  
-function keyPressed() {
-    if (screen === "battle") {
-      if (key === ' ') {
-        keyPressedBattle();
-      }
-      if (keyCode === ESCAPE) {
-        togglePause(); // Toggle pause when ESC is pressed
-      }
-    } else if (screen === "map") {
-      if (key === 'Enter') {
-        startBattle(currentLevel); // Start the current level on Enter
-      }
-    }
-}
-  
 
 function startBattle(level) {
     level = constrain(level, 1, totalLevels); // Ensure level is within bounds
