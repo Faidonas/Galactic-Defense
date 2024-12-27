@@ -3,7 +3,7 @@ class Player {
       this.x = width / 2;
       this.y = height - 50;
       this.size = 50;
-      this.speed = 5;
+      this.speed = 8;
     }
   
     update() {
