@@ -153,15 +153,6 @@ function waveComplete() {
   }
 }
 
-function levelComplete() {
-  // Called when the player finishes a level
-  if (level < totalLevels) {
-    level++; // Unlock the next level only if it's less than totalLevels
-    lastUnlockedLevel = level; // Update lastUnlockedLevel to the newly unlocked level
-  }
-  screen = "map"; // Switch back to map
-}
-
 
 
 function keyPressedBattle() {
@@ -170,28 +161,8 @@ function keyPressedBattle() {
     bullets.push(player.shoot());
     laserSound.play();
   }
-  if (keyCode === ESCAPE) {
-    togglePause(); // Toggle pause when ESC is pressed
-  }
 }
 
-function gameOver() {
-  textSize(64);
-  textAlign(CENTER, CENTER);
-  fill(255, 0, 0);
-  text("GAME OVER", width / 2, height / 3); // Display "Game Over" message
-
-  // Display game over menu options
-  textSize(32);
-  for (let i = 0; i < gameOverOptions.length; i++) {
-    if (i === selectedGameOverOption) {
-      fill(255, 0, 0); // Highlight the selected option
-    } else {
-      fill(255);
-    }
-    text(gameOverOptions[i], width / 2, height / 2 + i * 40); // Display options with some vertical spacing
-  }
-}
 
 // **Toggle Pause** - When ESC is pressed, toggle between paused and not paused
 function togglePause() {
@@ -246,8 +217,14 @@ function handlePauseSelection(option) {
     }
   } else if (option === "Go to Map") {
     screen = "map"; // Go back to the map screen
-    // currentLevel = 1; // Reset level or set to appropriate level
+    document.getElementById('pause-menu').classList.add('hidden');
+
+    // Stop pause menu music when leaving
+    if (pauseMenuMusic.isPlaying()) {
+      pauseMenuMusic.stop();
+    }
   }
+  loop(); // Resume the game loop
 }
 
 function spawnHeart() {
@@ -257,7 +234,7 @@ function spawnHeart() {
   }
 }
 
-function mousePressed() {
+/*function mousePressed() {
   if (screen === "start") {
     // Assuming you have a start screen where levels are selected
     if (mouseY > startButtonY && mouseY < startButtonY + buttonHeight) {
@@ -298,7 +275,7 @@ function mousePressed() {
     }
   }
   loop(); // Resume the game loop
-
+*/
 
 // **Handle Game Over Menu Selection** - Handles the selection when an option is clicked
 function handleGameOverSelection(option) {
@@ -342,4 +319,24 @@ function startLevel(level) {
   console.log(`Starting level ${level}`); // Debug statement
   setupBattle(level);
   screen = "battle"; // Switch to battle screen
+}
+
+function levelComplete() {
+  // Called when the player finishes a level
+  if (level < totalLevels) {
+    level++; // Unlock the next level only if it's less than totalLevels
+    lastUnlockedLevel = level; // Update lastUnlockedLevel to the newly unlocked level
+  }
+  isLevelComplete = true; // Set level complete state
+  document.getElementById('level-complete-menu').classList.remove('hidden'); // Show the game over menu
+  noLoop(); // Stop the game loop
+}
+
+function drawMenuBackground(lastFrame) {
+  if (lastFrame) {
+    image(lastFrame, 0, 0, width, height); // Draw the captured frame as the background
+  }
+  // Dim the background with a semi-transparent overlay
+  fill(0, 0, 0, 10); // Semi-transparent black
+  rect(0, 0, width, height); // Cover the entire screen with the overlay
 }
