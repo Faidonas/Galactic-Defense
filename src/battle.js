@@ -14,7 +14,6 @@ let isGameOver // Tracks whether the game is over
 let isLevelComplete = false; // Tracks whether the level is completed
 
 function setupBattle(level) {
-  console.log(`Setting up battle for level ${level}`); // Debug statement
   // Initialize game elements for the given level
   player = new Player();
   enemies = [];
@@ -153,8 +152,6 @@ function waveComplete() {
   }
 }
 
-
-
 function keyPressedBattle() {
   // Handle player input for the battle screen
   if (key === ' ') {
@@ -162,7 +159,6 @@ function keyPressedBattle() {
     laserSound.play();
   }
 }
-
 
 // **Toggle Pause** - When ESC is pressed, toggle between paused and not paused
 function togglePause() {
@@ -227,56 +223,6 @@ function handlePauseSelection(option) {
   loop(); // Resume the game loop
 }
 
-function spawnHeart() {
-  if (random(1) < 0.01) { // 1% chance per frame to spawn a heart
-    let x = random(50, width - 50); // Random X position
-    hearts.push(new Heart(x, -20)); // Spawn the heart slightly above the screen
-  }
-}
-
-/*function mousePressed() {
-  if (screen === "start") {
-    // Assuming you have a start screen where levels are selected
-    if (mouseY > startButtonY && mouseY < startButtonY + buttonHeight) {
-      startLevel(1); // Start the first level when the start button is clicked
-    }
-  } else if (isGameOver) {
-    // Check if player clicked on one of the options
-    let optionHeight = 40;
-    let startY = height / 2;
-
-    for (let i = 0; i < gameOverOptions.length; i++) {
-      let optionY = startY + i * optionHeight;
-      if (mouseY > optionY - 20 && mouseY < optionY + 20) {
-        selectedGameOverOption = i; // Select the clicked option
-        handleGameOverSelection(); // Handle the selected option
-        break;
-      }
-    }
-  } else if (isPaused) {
-    // Check if player clicked on one of the pause menu options
-    let optionHeight = 40;
-    let startY = height / 2;
-
-    for (let i = 0; i < menuOptions.length; i++) {
-      let optionY = startY + i * optionHeight;
-      if (mouseY > optionY - 20 && mouseY < optionY + 20) {
-        selectedOption = i; // Select the clicked option
-        handlePauseSelection(); // Handle the selected option
-        break;
-      }
-    }
-  }
-    document.getElementById('pause-menu').classList.add('hidden');
-
-    // Stop pause menu music when leaving
-    if (pauseMenuMusic.isPlaying()) {
-      pauseMenuMusic.stop();
-    }
-  }
-  loop(); // Resume the game loop
-*/
-
 // **Handle Game Over Menu Selection** - Handles the selection when an option is clicked
 function handleGameOverSelection(option) {
   // Play button click sound
@@ -315,10 +261,11 @@ function checkGameOver() {
   }
 }
 
-function startLevel(level) {
-  console.log(`Starting level ${level}`); // Debug statement
-  setupBattle(level);
-  screen = "battle"; // Switch to battle screen
+function spawnHeart() {
+  if (random(1) < 0.01) { // 1% chance per frame to spawn a heart
+    let x = random(50, width - 50); // Random X position
+    hearts.push(new Heart(x, -20)); // Spawn the heart slightly above the screen
+  }
 }
 
 function levelComplete() {
