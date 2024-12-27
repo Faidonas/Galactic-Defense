@@ -5,8 +5,9 @@ let totalLevels = 5; // Adjust as needed
 
 
 // Declare global assets variables
-let playerImage, enemyImage, bulletImage, explosionImage, heartImage;
+let playerImage, enemyImage, bulletImage, explosionImage, heartImage, pauseMenuImage, gameOverImage;
 let laserSound, explosionSound;
+
 
 function preload() {
   playerImage = loadImage('assets/images/player_ship.png');
@@ -15,15 +16,42 @@ function preload() {
   bulletImage = loadImage('assets/images/heart.png');
   heartImage = loadImage('assets/images/heart.png');
   backgroundimage = loadImage("assets/images/bg5.jpg");
-  //mapImage = loadImage("path-to-your-map-image.jpg"); 
+  mapImage = loadImage("assets/images/map.jpg"); 
+  pauseMenuImage = loadImage("assets/images/pausemenu.png");
+  gameOverImage = loadImage("assets/images/gameover.png")
  
   laserSound = loadSound('assets/sounds/laser_shot.wav');
   explosionSound = loadSound('assets/sounds/explosion_sound.wav');
+  buttonClicked = loadSound('assets/sounds/button-clicked.mp3');
+  menuPopUp = loadSound('assets/sounds/menu-popup-sound.mp3');
+  pauseMenuMusic = loadSound('assets/sounds/pause-menu-music.mp3');
   // bgMusic = loadSound('assets/sounds/background_music.wav');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  // Set up event listeners for the buttons
+  document.getElementById('resume-button').addEventListener('click', function () {
+    handlePauseSelection("Resume");
+  });
+
+  document.getElementById('map-button').addEventListener('click', function () {
+    handlePauseSelection("Go to Map");
+  });
+
+  document.getElementById('restart-button').addEventListener('click', function () {
+    handleGameOverSelection("Retry");
+  });
+
+  document.getElementById('main-menu-button').addEventListener('click', function () {
+    handleGameOverSelection("Go to Map");
+  });
+
+  // Prevent default scrolling behavior
+  window.addEventListener('wheel', function(e) {
+    e.preventDefault();
+  }, { passive: false });
 }
 
 function windowResized() {
@@ -31,21 +59,13 @@ function windowResized() {
 }
 
 function draw() {
-    background(30);
-  
-    if (screen === "map") {
-      drawMapScreen(); // Draw the map screen
-    } else if (screen === "battle") {
-      if (lives <= 0) {
-        isGameOver = true; // Set game over flag to true if lives are 0
-      }
-      drawBattleScreen(); // Draw the battle screen
-    }
-  
-    // Show game over screen if game is over
-    if (isGameOver) {
-      gameOver(); // Display the game over menu
-    }
+  background(30);
+
+  if (screen === "map") {
+    drawMapScreen(); // Draw the map screen
+  } else if (screen === "battle") {
+    drawBattleScreen(); // Draw the battle screen
+  }
 }
 
 function keyPressed() {
@@ -53,7 +73,7 @@ function keyPressed() {
     if (key === ' ') {
       keyPressedBattle();
     }
-    if (keyCode === ESCAPE) {
+    if (keyCode === ESCAPE && !isGameOver && !isLevelComplete) {
       togglePause(); // Toggle pause when ESC is pressed
     }
   } else if (screen === "map") {

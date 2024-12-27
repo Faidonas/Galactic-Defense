@@ -5,11 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galactic Defense</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script> <!-- Updated version -->
+    <div id="pause-menu" class="menu hidden">
+        <h1>Paused</h1>
+        <button id="resume-button">Resume</button>  
+        <button id="map-button">Go to Map</button>
+    </div>
+    
+    <div id="game-over-menu" class="menu hidden">
+        <h1>Game Over</h1>
+        <button id="restart-button">Restart</button>
+        <button id="main-menu-button">Go To Map</button>
+    </div>
+    <div id="level-complete-menu" class="menu hidden">
+        <h1>Congratulations!</h1>
+        <p>You have successfully completed the level!</p>
+        <button onclick="handleLevelCompleteSelection()">Continue</button>
+    </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/molleindustria/p5.play/42cd19c3/lib/p5.play.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script> <!-- Include p5.sound -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script>
     <script src="src/player.js"></script>
     <script src="src/enemy.js"></script>
     <script src="src/collision.js"></script>

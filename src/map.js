@@ -1,5 +1,6 @@
 function drawMapScreen() {
-    background(200);
+    //background(200);
+    image(mapImage, 0, 0, width, height); // Display the background
   
     for (let i = 0; i < totalLevels; i++) {
       let x = width / 2 - totalLevels * 50 + i * 100; // Spread levels horizontally

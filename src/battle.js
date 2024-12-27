@@ -3,15 +3,13 @@ let enemies = [];
 let bullets = [];
 let stars = [];
 let hearts = [];
-let level = 1; // Keep track of the current battle level within battle.js
+let level = 1 // Keep track of the current battle level within battle.js
 let score = 0;
-let lives = 5; // Keep lives local to battle.js
-let isPaused = false; // Tracks whether the game is paused
-let isGameOver = false; // Tracks whether the game is over
-let menuOptions = ["Resume", "Go to Map"]; // Menu options
-let selectedOption = 0; // Keeps track of the currently selected option
-let gameOverOptions = ["Retry", "Go to Map"]; // Options for the game over screen
-let selectedGameOverOption = 0; // Track the selected option in the game over screen
+let lives = 5; 
+let lastFrame;
+let isPaused  // Tracks whether the game is paused
+let isGameOver // Tracks whether the game is over
+let isLevelComplete = false; // Tracks whether the level is completed
 
 function setupBattle(level) {
   // Initialize game elements for the given level
@@ -23,23 +21,39 @@ function setupBattle(level) {
 
   // Reset score and lives for the new battle
   score = 0;
-  lives = 5; 
+  lives = 5;
+  isPaused = false;
+  isGameOver = false;
 
   // Generate stars
   for (let i = 0; i < 50; i++) {
     stars.push(new Star());
   }
 
- 
-  
   spawnEnemies(level); // Spawn enemies based on level
 }
 
 function drawBattleScreen() {
   if (isPaused) {
-    drawPauseMenu(); // Show pause menu
+    // Capture the last frame when the game is paused
+    if (!lastFrame) {
+      lastFrame = get();  // Capture the current frame
+    }
+    // Draw the captured frame as the background for the pause menu
+    drawMenuBackground(lastFrame); 
   } else if (isGameOver) {
-    gameOver(); // Show game over screen
+    // Capture the last frame when the game is over
+    if (!lastFrame) {
+      lastFrame = get();  // Capture the current frame
+    }
+    // Draw the captured frame as the background for the game over menu
+    drawMenuBackground(lastFrame); 
+  } else if (isLevelComplete) {
+    if (!lastFrame) {
+      lastFrame = get();
+    }
+    // Draw the captured frame as the background for the level complete menu
+    drawMenuBackground(lastFrame); 
   } else {
     // Continue normal battle flow
     image(backgroundimage, 0, 0, width, height); // Display the background
@@ -55,7 +69,6 @@ function drawBattleScreen() {
       if (hearts[i].isCaught(player)) {
         hearts.splice(i, 1); // Remove the heart
         lives = min(lives + 1, 10); // Add a life, capped at 5
-        //catchHeartSound.play(); // Play a sound effect (optional)
       }
 
       // Remove hearts that fall off the screen
@@ -113,11 +126,8 @@ function drawBattleScreen() {
     displayLevel();
     displayLives();
 
-    // Check for game over
-    if (lives <= 0) {
-      isGameOver = true; // Set the game over flag
-      noLoop(); // Stop the game loop to keep the game over screen visible
-    }
+    // Check for game over (triggered automatically when lives <= 0)
+    checkGameOver();
 
     // Check for level completion
     if (enemies.length === 0 && !isGameOver) {
@@ -129,86 +139,101 @@ function drawBattleScreen() {
 // **Toggle Pause** - When ESC is pressed, toggle between paused and not paused
 function togglePause() {
   isPaused = !isPaused; // Toggle the pause state
+  if (isPaused) {
+    lastFrame = get();  // Capture the current frame when pausing
+    noLoop(); // Stop the game loop
+    document.getElementById('pause-menu').classList.remove('hidden'); // Show the pause menu
+
+    // Play menuPopUp sound when pause menu opens
+    if (menuPopUp.isLoaded()) {
+      menuPopUp.play();
+    }
+
+    // Start pause menu music after 0.5 seconds
+    if (pauseMenuMusic.isLoaded()) {
+      setTimeout(() => {
+        pauseMenuMusic.loop();
+      }, 200); // 200 milliseconds delay
+    }
+  } else {
+    // Stop pause menu music when resuming
+    if (pauseMenuMusic.isPlaying()) {
+      pauseMenuMusic.stop();
+    }
+    loop(); // Resume the game loop
+    document.getElementById('pause-menu').classList.add('hidden'); // Hide the pause menu
+  }
 }
 
-// **Draw Pause Menu** - If paused, show the pause menu with options
-function drawPauseMenu() {
-  background(0, 0, 0, 150); // Semi-transparent background
-  fill(255);
-  textSize(32);
-  textAlign(CENTER, CENTER);
-  text("PAUSED", width / 2, height / 3);
-
-  // Draw menu options
-  for (let i = 0; i < menuOptions.length; i++) {
-    if (i === selectedOption) {
-      fill(255, 0, 0); // Highlight selected option
-    } else {
-      fill(255);
-    }
-    text(menuOptions[i], width / 2, height / 2 + i * 40); // Spacing between options
-  }
+// **Game Over Toggle** - Automatically triggered when the player loses
+function gameOverToggle() {
+    // Show the game over screen and stop the game loop
+    document.getElementById('game-over-menu').classList.remove('hidden'); // Show the game over menu
+    noLoop(); // Stop the game loop to keep the game over screen visible
 }
 
 // **Handle Pause Menu Selection** - Handles the selection when an option is clicked
-function handlePauseSelection() {
-  if (selectedOption === 0) {
+function handlePauseSelection(option) {
+  // Play button click sound
+  if (buttonClicked.isLoaded()) {
+    buttonClicked.play();
+  }
+
+  if (option === "Resume") {
     isPaused = false; // Resume the battle
-  } else if (selectedOption === 1) {
+    document.getElementById('pause-menu').classList.add('hidden');
+
+    // Stop pause menu music when resuming
+    if (pauseMenuMusic.isPlaying()) {
+      pauseMenuMusic.stop();
+    }
+  } else if (option === "Go to Map") {
     screen = "map"; // Go back to the map screen
-    // currentLevel = 1; // Reset level or set to appropriate level
-  }
-}
+    document.getElementById('pause-menu').classList.add('hidden');
 
-function spawnHeart() {
-  if (random(1) < 0.01) { // 1% chance per frame to spawn a heart
-    let x = random(50, width - 50); // Random X position
-    hearts.push(new Heart(x, -20)); // Spawn the heart slightly above the screen
-  }
-}
-
-
-function mousePressed() {
-  if (isGameOver) {
-    // Check if player clicked on one of the options
-    let optionHeight = 40;
-    let startY = height / 2;
-
-    for (let i = 0; i < gameOverOptions.length; i++) {
-      let optionY = startY + i * optionHeight;
-      if (mouseY > optionY - 20 && mouseY < optionY + 20) {
-        selectedGameOverOption = i; // Select the clicked option
-        handleGameOverSelection(); // Handle the selected option
-        break;
-      }
-    }
-  } else if (isPaused) {
-    // Check if player clicked on one of the pause menu options
-    let optionHeight = 40;
-    let startY = height / 2;
-
-    for (let i = 0; i < menuOptions.length; i++) {
-      let optionY = startY + i * optionHeight;
-      if (mouseY > optionY - 20 && mouseY < optionY + 20) {
-        selectedOption = i; // Select the clicked option
-        handlePauseSelection(); // Handle the selected option
-        break;
-      }
+    // Stop pause menu music when leaving
+    if (pauseMenuMusic.isPlaying()) {
+      pauseMenuMusic.stop();
     }
   }
+  loop(); // Resume the game loop
 }
 
-function handleGameOverSelection() {
-  if (selectedGameOverOption === 0) {
-    // Retry the current level
-    setupBattle(level); // Reset and start the current level again
-    isGameOver = false; // Reset game over state
-    loop(); // Resume the game loop
-  } else if (selectedGameOverOption === 1) {
-    // Go back to the map screen
-    screen = "map";
-    isGameOver = false; // Reset game over state
-    loop();
+// **Handle Game Over Menu Selection** - Handles the selection when an option is clicked
+function handleGameOverSelection(option) {
+  // Play button click sound
+  if (buttonClicked.isLoaded()) {
+    buttonClicked.play();
+  }
+  if (option === "Retry") {
+    setupBattle(level); // Retry the current level
+    isGameOver = false;
+    document.getElementById('game-over-menu').classList.add('hidden');
+  } else if (option === "Go to Map") {
+    screen = "map"; // Go back to the map screen
+    isGameOver = false;
+    document.getElementById('game-over-menu').classList.add('hidden');
+  }
+  loop(); // Resume the game loop
+}
+
+function handleLevelCompleteSelection() {
+  // Play button click sound
+  if (buttonClicked.isLoaded()) {
+    buttonClicked.play();
+  }
+  // Handle the "Continue" button click
+  isLevelComplete = false;
+  document.getElementById('level-complete-menu').classList.add('hidden');
+  screen = "map"; // Switch to the map screen
+  loop(); // Resume the game loop for the next level
+}
+
+// Function to handle the game over logic (automatically triggered when lives reach 0)
+function checkGameOver() {
+  if (lives <= 0) {
+    isGameOver = true; // Game is over, set isGameOver to true
+    gameOverToggle(); // Trigger game over toggle automatically
   }
 }
 
@@ -218,7 +243,9 @@ function levelComplete() {
     level++; // Unlock the next level only if it's less than totalLevels
     lastUnlockedLevel = level; // Update lastUnlockedLevel to the newly unlocked level
   }
-  screen = "map"; // Switch back to map
+  isLevelComplete = true; // Set level complete state
+  document.getElementById('level-complete-menu').classList.remove('hidden'); // Show the game over menu
+  noLoop(); // Stop the game loop
 }
 
 function spawnEnemies(level) {
@@ -230,31 +257,26 @@ function spawnEnemies(level) {
   }
 }
 
+function spawnHeart() {
+  if (random(1) < 0.01) { // 1% chance per frame to spawn a heart
+    let x = random(50, width - 50); // Random X position
+    hearts.push(new Heart(x, -20)); // Spawn the heart slightly above the screen
+  }
+}
+
 function keyPressedBattle() {
   // Handle player input for the battle screen
   if (key === ' ') {
     bullets.push(player.shoot());
     laserSound.play();
   }
-  if (keyCode === ESCAPE) {
-    togglePause(); // Toggle pause when ESC is pressed
-  }
 }
 
-function gameOver() {
-  textSize(64);
-  textAlign(CENTER, CENTER);
-  fill(255, 0, 0);
-  text("GAME OVER", width / 2, height / 3); // Display "Game Over" message
-
-  // Display game over menu options
-  textSize(32);
-  for (let i = 0; i < gameOverOptions.length; i++) {
-    if (i === selectedGameOverOption) {
-      fill(255, 0, 0); // Highlight the selected option
-    } else {
-      fill(255);
-    }
-    text(gameOverOptions[i], width / 2, height / 2 + i * 40); // Display options with some vertical spacing
+function drawMenuBackground(lastFrame) {
+  if (lastFrame) {
+    image(lastFrame, 0, 0, width, height); // Draw the captured frame as the background
   }
+  // Dim the background with a semi-transparent overlay
+  fill(0, 0, 0, 10); // Semi-transparent black
+  rect(0, 0, width, height); // Cover the entire screen with the overlay
 }
