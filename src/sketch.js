@@ -27,7 +27,14 @@ function preload() {
   buttonClicked = loadSound('assets/sounds/button-clicked.mp3');
   menuPopUp = loadSound('assets/sounds/menu-popup-sound.mp3');
   pauseMenuMusic = loadSound('assets/sounds/pause-menu-music.mp3');
-  // bgMusic = loadSound('assets/sounds/background_music.wav');
+  gameoverSound = loadSound('assets/sounds/game_over_mix.wav');
+  bgMusic = loadSound('assets/sounds/background_music.wav');
+  winningSound = loadSound('assets/sounds/winning_mix.wav');
+
+  //Tune the volume of the sounds!
+  bgMusic.setVolume(0.3);
+  explosionSound.setVolume(0.5);
+
 }
 
 function setup() {

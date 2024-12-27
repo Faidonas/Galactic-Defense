@@ -12,6 +12,7 @@ let lastFrame;
 let isPaused  // Tracks whether the game is paused
 let isGameOver // Tracks whether the game is over
 let isLevelComplete = false; // Tracks whether the level is completed
+let bgMusicPlaying = false; // To track whether background music is playing
 
 function setupBattle(level) {
   // Initialize game elements for the given level
@@ -34,6 +35,8 @@ function setupBattle(level) {
   }
 
   spawnEnemies(level, wave); // Spawn enemies based on level and wave
+
+  startBattleMusic(); // Start background music when the battle begins
 }
 
 function drawBattleScreen() {
@@ -173,19 +176,26 @@ function togglePause() {
       menuPopUp.play();
     }
 
-    // Start pause menu music after 0.5 seconds
-    if (pauseMenuMusic.isLoaded()) {
-      setTimeout(() => {
+    // Stop background music when paused
+    stopBattleMusic();
+
+    // Start pause menu music
+    if (pauseMenuMusic.isLoaded()) 
         pauseMenuMusic.loop();
-      }, 200); // 200 milliseconds delay
-    }
   } else {
+    // Play menuPopUp sound when pause menu closes
+    if (menuPopUp.isLoaded()) {
+      menuPopUp.play();
+    }
     // Stop pause menu music when resuming
     if (pauseMenuMusic.isPlaying()) {
       pauseMenuMusic.stop();
     }
     loop(); // Resume the game loop
     document.getElementById('pause-menu').classList.add('hidden'); // Hide the pause menu
+
+    // Restart background music when resuming the battle
+    startBattleMusic();
   }
 }
 
@@ -193,6 +203,12 @@ function togglePause() {
 function gameOverToggle() {
     // Show the game over screen and stop the game loop
     document.getElementById('game-over-menu').classList.remove('hidden'); // Show the game over menu
+    // Stop background music when game is over
+    stopBattleMusic();
+    // Play game over sound when game is over  
+    if (gameoverSound.isLoaded()) {
+      gameoverSound.play();
+    }
     noLoop(); // Stop the game loop to keep the game over screen visible
 }
 
@@ -206,19 +222,14 @@ function handlePauseSelection(option) {
   if (option === "Resume") {
     isPaused = false; // Resume the battle
     document.getElementById('pause-menu').classList.add('hidden');
-
-    // Stop pause menu music when resuming
-    if (pauseMenuMusic.isPlaying()) {
-      pauseMenuMusic.stop();
-    }
+    startBattleMusic(); // Restart background music when resuming
   } else if (option === "Go to Map") {
     screen = "map"; // Go back to the map screen
     document.getElementById('pause-menu').classList.add('hidden');
-
-    // Stop pause menu music when leaving
-    if (pauseMenuMusic.isPlaying()) {
-      pauseMenuMusic.stop();
-    }
+  }
+  // Stop pause menu music when resuming
+  if (pauseMenuMusic.isPlaying()) {
+    pauseMenuMusic.stop();
   }
   loop(); // Resume the game loop
 }
@@ -229,6 +240,7 @@ function handleGameOverSelection(option) {
   if (buttonClicked.isLoaded()) {
     buttonClicked.play();
   }
+  
   if (option === "Retry") {
     setupBattle(level); // Retry the current level
     isGameOver = false;
@@ -237,6 +249,10 @@ function handleGameOverSelection(option) {
     screen = "map"; // Go back to the map screen
     isGameOver = false;
     document.getElementById('game-over-menu').classList.add('hidden');
+  }
+  // Stop game over music when resuming
+  if (gameoverSound.isPlaying()) {
+    gameoverSound.stop();
   }
   loop(); // Resume the game loop
 }
@@ -250,6 +266,10 @@ function handleLevelCompleteSelection() {
   isLevelComplete = false;
   document.getElementById('level-complete-menu').classList.add('hidden');
   screen = "map"; // Switch to the map screen
+   // Stop winning music when continuing
+   if (winningSound.isPlaying()) {
+    winningSound.stop();
+  }
   loop(); // Resume the game loop for the next level
 }
 
@@ -276,6 +296,12 @@ function levelComplete() {
   }
   isLevelComplete = true; // Set level complete state
   document.getElementById('level-complete-menu').classList.remove('hidden'); // Show the game over menu
+  // Stop background music when level is complete
+  stopBattleMusic();
+  // Play the winning sound
+  if (winningSound.isLoaded()) {
+    winningSound.play();
+  }
   noLoop(); // Stop the game loop
 }
 
@@ -286,4 +312,20 @@ function drawMenuBackground(lastFrame) {
   // Dim the background with a semi-transparent overlay
   fill(0, 0, 0, 10); // Semi-transparent black
   rect(0, 0, width, height); // Cover the entire screen with the overlay
+}
+
+// Function to start playing background music when the battle begins
+function startBattleMusic() {
+  if (bgMusic.isLoaded() && !bgMusicPlaying) {
+    bgMusic.loop(); // Start playing the background music in loop
+    bgMusicPlaying = true; // Mark as playing
+  }
+}
+
+// Function to stop the background music
+function stopBattleMusic() {
+  if (bgMusic.isPlaying()) {
+    bgMusic.stop(); // Stop the music
+    bgMusicPlaying = false; // Mark as not playing
+  }
 }
