@@ -3,7 +3,9 @@ let enemies = [];
 let bullets = [];
 let stars = [];
 let hearts = [];
-let level = 1 // Keep track of the current battle level within battle.js
+let level = 1; // Keep track of the current battle level within battle.js
+let wave = 1; // Track the current wave within the level
+let maxWaves = 5; // Number of waves per level
 let score = 0;
 let lives = 5; 
 let lastFrame;
@@ -12,12 +14,14 @@ let isGameOver // Tracks whether the game is over
 let isLevelComplete = false; // Tracks whether the level is completed
 
 function setupBattle(level) {
+  console.log(`Setting up battle for level ${level}`); // Debug statement
   // Initialize game elements for the given level
   player = new Player();
   enemies = [];
   bullets = [];
   stars = [];
   hearts = [];
+  wave = 1; // Reset wave to 1 for the new level
 
   // Reset score and lives for the new battle
   score = 0;
@@ -30,7 +34,7 @@ function setupBattle(level) {
     stars.push(new Star());
   }
 
-  spawnEnemies(level); // Spawn enemies based on level
+  spawnEnemies(level, wave); // Spawn enemies based on level and wave
 }
 
 function drawBattleScreen() {
@@ -107,8 +111,11 @@ function drawBattleScreen() {
       for (let j = bullets.length - 1; j >= 0; j--) {
         if (enemies[i].collides(bullets[j])) {
           explosionSound.play();
-          score += 10;
-          enemies.splice(i, 1);
+          enemies[i].health -= 1; // Decrease health for medium and strong enemies
+          if (enemies[i].health <= 0) {
+            score += enemies[i] instanceof StrongEnemy ? 30 : enemies[i] instanceof MediumEnemy ? 20 : 10; // More points for medium and strong enemies
+            enemies.splice(i, 1);
+          }
           bullets.splice(j, 1);
           break;
         }
@@ -129,10 +136,60 @@ function drawBattleScreen() {
     // Check for game over (triggered automatically when lives <= 0)
     checkGameOver();
 
-    // Check for level completion
+    // Check for wave completion
     if (enemies.length === 0 && !isGameOver) {
-      levelComplete();
+      waveComplete();
     }
+  }
+}
+
+function waveComplete() {
+  // Called when the player finishes a wave
+  if (wave < maxWaves) {
+    wave++; // Move to the next wave
+    spawnEnemies(level, wave); // Spawn enemies for the next wave
+  } else {
+    levelComplete(); // If all waves are completed, complete the level
+  }
+}
+
+function levelComplete() {
+  // Called when the player finishes a level
+  if (level < totalLevels) {
+    level++; // Unlock the next level only if it's less than totalLevels
+    lastUnlockedLevel = level; // Update lastUnlockedLevel to the newly unlocked level
+  }
+  screen = "map"; // Switch back to map
+}
+
+
+
+function keyPressedBattle() {
+  // Handle player input for the battle screen
+  if (key === ' ') {
+    bullets.push(player.shoot());
+    laserSound.play();
+  }
+  if (keyCode === ESCAPE) {
+    togglePause(); // Toggle pause when ESC is pressed
+  }
+}
+
+function gameOver() {
+  textSize(64);
+  textAlign(CENTER, CENTER);
+  fill(255, 0, 0);
+  text("GAME OVER", width / 2, height / 3); // Display "Game Over" message
+
+  // Display game over menu options
+  textSize(32);
+  for (let i = 0; i < gameOverOptions.length; i++) {
+    if (i === selectedGameOverOption) {
+      fill(255, 0, 0); // Highlight the selected option
+    } else {
+      fill(255);
+    }
+    text(gameOverOptions[i], width / 2, height / 2 + i * 40); // Display options with some vertical spacing
   }
 }
 
@@ -189,6 +246,50 @@ function handlePauseSelection(option) {
     }
   } else if (option === "Go to Map") {
     screen = "map"; // Go back to the map screen
+    // currentLevel = 1; // Reset level or set to appropriate level
+  }
+}
+
+function spawnHeart() {
+  if (random(1) < 0.01) { // 1% chance per frame to spawn a heart
+    let x = random(50, width - 50); // Random X position
+    hearts.push(new Heart(x, -20)); // Spawn the heart slightly above the screen
+  }
+}
+
+function mousePressed() {
+  if (screen === "start") {
+    // Assuming you have a start screen where levels are selected
+    if (mouseY > startButtonY && mouseY < startButtonY + buttonHeight) {
+      startLevel(1); // Start the first level when the start button is clicked
+    }
+  } else if (isGameOver) {
+    // Check if player clicked on one of the options
+    let optionHeight = 40;
+    let startY = height / 2;
+
+    for (let i = 0; i < gameOverOptions.length; i++) {
+      let optionY = startY + i * optionHeight;
+      if (mouseY > optionY - 20 && mouseY < optionY + 20) {
+        selectedGameOverOption = i; // Select the clicked option
+        handleGameOverSelection(); // Handle the selected option
+        break;
+      }
+    }
+  } else if (isPaused) {
+    // Check if player clicked on one of the pause menu options
+    let optionHeight = 40;
+    let startY = height / 2;
+
+    for (let i = 0; i < menuOptions.length; i++) {
+      let optionY = startY + i * optionHeight;
+      if (mouseY > optionY - 20 && mouseY < optionY + 20) {
+        selectedOption = i; // Select the clicked option
+        handlePauseSelection(); // Handle the selected option
+        break;
+      }
+    }
+  }
     document.getElementById('pause-menu').classList.add('hidden');
 
     // Stop pause menu music when leaving
@@ -197,7 +298,7 @@ function handlePauseSelection(option) {
     }
   }
   loop(); // Resume the game loop
-}
+
 
 // **Handle Game Over Menu Selection** - Handles the selection when an option is clicked
 function handleGameOverSelection(option) {
@@ -237,46 +338,8 @@ function checkGameOver() {
   }
 }
 
-function levelComplete() {
-  // Called when the player finishes a level
-  if (level < totalLevels) {
-    level++; // Unlock the next level only if it's less than totalLevels
-    lastUnlockedLevel = level; // Update lastUnlockedLevel to the newly unlocked level
-  }
-  isLevelComplete = true; // Set level complete state
-  document.getElementById('level-complete-menu').classList.remove('hidden'); // Show the game over menu
-  noLoop(); // Stop the game loop
-}
-
-function spawnEnemies(level) {
-  // Spawn enemies based on the current level
-  for (let i = 0; i < level * 5; i++) {
-    let x = random(50, width - 50);
-    let y = random(-200, -50);
-    enemies.push(new Enemy(x, y));
-  }
-}
-
-function spawnHeart() {
-  if (random(1) < 0.01) { // 1% chance per frame to spawn a heart
-    let x = random(50, width - 50); // Random X position
-    hearts.push(new Heart(x, -20)); // Spawn the heart slightly above the screen
-  }
-}
-
-function keyPressedBattle() {
-  // Handle player input for the battle screen
-  if (key === ' ') {
-    bullets.push(player.shoot());
-    laserSound.play();
-  }
-}
-
-function drawMenuBackground(lastFrame) {
-  if (lastFrame) {
-    image(lastFrame, 0, 0, width, height); // Draw the captured frame as the background
-  }
-  // Dim the background with a semi-transparent overlay
-  fill(0, 0, 0, 10); // Semi-transparent black
-  rect(0, 0, width, height); // Cover the entire screen with the overlay
+function startLevel(level) {
+  console.log(`Starting level ${level}`); // Debug statement
+  setupBattle(level);
+  screen = "battle"; // Switch to battle screen
 }

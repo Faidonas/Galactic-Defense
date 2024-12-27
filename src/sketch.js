@@ -12,6 +12,8 @@ let laserSound, explosionSound;
 function preload() {
   playerImage = loadImage('assets/images/player_ship.png');
   enemyImage = loadImage('assets/images/enemy_ship.png');
+  mediumEnemyImage = loadImage('assets/images/medium_enemy_ship.png'); // Load medium enemy image
+  strongEnemyImage = loadImage('assets/images/strong_enemy_ship.png'); // Load strong enemy image
   explosionImage = loadImage('assets/images/explosions.png');
   bulletImage = loadImage('assets/images/heart.png');
   heartImage = loadImage('assets/images/heart.png');
