@@ -7,7 +7,7 @@ let totalLevels = 5; // Adjust as needed
 // Declare global assets variables
 let playerImage, enemyImage, bulletImage, explosionImage, heartImage, pauseMenuImage, gameOverImage;
 let laserSound, explosionSound;
-
+let doublePowerUpImage, triplePowerUpImage;
 
 function preload() {
   playerImage = loadImage('assets/images/player_ship.png');
@@ -19,6 +19,10 @@ function preload() {
   heartImage = loadImage('assets/images/heart.png');
   backgroundimage = loadImage("assets/images/bg5.jpg");
   mapImage = loadImage("assets/images/map.jpg"); 
+  pauseMenuImage = loadImage("assets/images/pausemenu.png");
+  gameOverImage = loadImage("assets/images/gameover.png")
+  doublePowerUpImage = loadImage('assets/images/double_powerup.png'); // Load double power-up image
+  triplePowerUpImage = loadImage('assets/images/triple_powerup.png'); // Load triple power-up image
  
   laserSound = loadSound('assets/sounds/laser_shot.wav');
   explosionSound = loadSound('assets/sounds/explosion_sound.wav');

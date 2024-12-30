@@ -13,6 +13,7 @@ let isPaused  // Tracks whether the game is paused
 let isGameOver // Tracks whether the game is over
 let isLevelComplete = false; // Tracks whether the level is completed
 let bgMusicPlaying = false; // To track whether background music is playing
+let powerUps = [];
 
 function setupBattle(level) {
   // Initialize game elements for the given level
@@ -38,6 +39,8 @@ function setupBattle(level) {
 
   startBattleMusic(); // Start background music when the battle begins
 }
+
+
 
 function drawBattleScreen() {
   if (isPaused) {
@@ -65,6 +68,7 @@ function drawBattleScreen() {
     image(backgroundimage, 0, 0, width, height); // Display the background
 
     spawnHeart();
+    spawnPowerUp();
     
     // Update and display hearts
     for (let i = hearts.length - 1; i >= 0; i--) {
@@ -80,6 +84,23 @@ function drawBattleScreen() {
       // Remove hearts that fall off the screen
       if (hearts[i] && hearts[i].y > height) {
         hearts.splice(i, 1);
+      }
+    }
+
+    // Update and display power-ups
+    for (let i = powerUps.length - 1; i >= 0; i--) {
+      powerUps[i].update();
+      powerUps[i].display();
+
+      // Check if the player catches the power-up
+      if (powerUps[i].isCaught(player)) {
+        player.applyPowerUp(powerUps[i]);
+        powerUps.splice(i, 1); // Remove the power-up
+      }
+
+      // Remove power-ups that fall off the screen
+      if (powerUps[i] && powerUps[i].y > height) {
+        powerUps.splice(i, 1);
       }
     }
 
@@ -145,6 +166,13 @@ function drawBattleScreen() {
   }
 }
 
+function spawnPowerUp() {
+  if (random(1) < 0.01) { // 1% chance per frame to spawn a power-up
+    let x = random(50, width - 50); // Random X position
+    powerUps.push(new PowerUp(x, -20)); // Spawn the power-up slightly above the screen
+  }
+}
+
 function waveComplete() {
   // Called when the player finishes a wave
   if (wave < maxWaves) {
@@ -158,7 +186,8 @@ function waveComplete() {
 function keyPressedBattle() {
   // Handle player input for the battle screen
   if (key === ' ') {
-    bullets.push(player.shoot());
+    let newBullets = player.shoot();
+    bullets.push(...newBullets);
     laserSound.play();
   }
 }
