@@ -19,8 +19,6 @@ function preload() {
   heartImage = loadImage('assets/images/heart.png');
   backgroundimage = loadImage("assets/images/bg5.jpg");
   mapImage = loadImage("assets/images/map.jpg"); 
-  pauseMenuImage = loadImage("assets/images/pausemenu.png");
-  gameOverImage = loadImage("assets/images/gameover.png")
  
   laserSound = loadSound('assets/sounds/laser_shot.wav');
   explosionSound = loadSound('assets/sounds/explosion_sound.wav');
