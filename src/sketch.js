@@ -19,8 +19,6 @@ function preload() {
   heartImage = loadImage('assets/images/heart.png');
   backgroundimage = loadImage("assets/images/bg5.jpg");
   mapImage = loadImage("assets/images/map.jpg"); 
-  pauseMenuImage = loadImage("assets/images/pausemenu.png");
-  gameOverImage = loadImage("assets/images/gameover.png")
   doublePowerUpImage = loadImage('assets/images/double_powerup.png'); // Load double power-up image
   triplePowerUpImage = loadImage('assets/images/triple_powerup.png'); // Load triple power-up image
  
