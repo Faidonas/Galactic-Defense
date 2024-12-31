@@ -27,6 +27,7 @@ class Player {
   display() {
     imageMode(CENTER);
     image(playerImage, this.x, this.y, this.size, this.size);
+    this.displayPowerUpBar(); // Display the power-up time bar
   }
 
   shoot() {
@@ -47,5 +48,20 @@ class Player {
   applyPowerUp(powerUp) {
     this.powerUp = powerUp.type;
     this.powerUpDuration = 600; // Power-up lasts for 600 frames
+  }
+
+  displayPowerUpBar() {
+    if (this.powerUp) {
+      let barWidth = 100;
+      let barHeight = 10;
+      let x = this.x - barWidth / 2;
+      let y = this.y - this.size / 2 - 20;
+      let remaining = map(this.powerUpDuration, 0, 600, 0, barWidth);
+
+      fill(255, 0, 0);
+      rect(x, y, barWidth, barHeight);
+      fill(0, 255, 0);
+      rect(x, y, remaining, barHeight);
+    }
   }
 }

@@ -167,7 +167,7 @@ function drawBattleScreen() {
 }
 
 function spawnPowerUp() {
-  if (random(1) < 0.01) { // 1% chance per frame to spawn a power-up
+  if (random(1) < 0.005) { // 0.5% chance per frame to spawn a power-up
     let x = random(50, width - 50); // Random X position
     powerUps.push(new PowerUp(x, -20)); // Spawn the power-up slightly above the screen
   }
