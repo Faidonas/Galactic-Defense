@@ -43,7 +43,7 @@ Your mission is to defend Earth from alien invaders by shooting down as many ene
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/galactic-defense.git
+   git clone https://github.com/Faidonas/Galactic-Defense.git
 2. Open index.html in your browser to play the game locally.
 ### Running the Game
 - Simply open index.html in a web browser. The game should start running immediately. Use the keyboard controls to navigate and shoot!
