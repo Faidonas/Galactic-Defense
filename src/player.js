@@ -2,7 +2,7 @@ class Player {
   constructor() {
     this.x = width / 2;
     this.y = height - 50;
-    this.size = 50;
+    this.size = 60;
     this.speed = 8;
     this.powerUp = null; // Track the current power-up
     this.powerUpDuration = 0; // Duration of the power-up

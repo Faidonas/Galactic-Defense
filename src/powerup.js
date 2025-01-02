@@ -2,7 +2,7 @@ class PowerUp {
     constructor(x, y) {
       this.x = x;
       this.y = y;
-      this.size = 20;
+      this.size = 30;
       this.speed = 2;
       this.type = random(['double', 'triple']); // Different types of power-ups
     }

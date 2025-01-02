@@ -1,8 +1,7 @@
 let screen = "map"; // Default to map screen
 let currentLevel = 1; // Tracks the player's current level
 let lastUnlockedLevel = 1; // Tracks the highest level unlocked by the player
-let totalLevels = 5; // Adjust as needed
-
+let totalLevels = 5;
 
 // Declare global assets variables
 let playerImage, enemyImage, bulletImage, explosionImage, heartImage, pauseMenuImage, gameOverImage;
@@ -14,13 +13,12 @@ function preload() {
   enemyImage = loadImage('assets/images/enemy_ship.png');
   mediumEnemyImage = loadImage('assets/images/medium_enemy_ship.png'); // Load medium enemy image
   strongEnemyImage = loadImage('assets/images/strong_enemy_ship.png'); // Load strong enemy image
-  explosionImage = loadImage('assets/images/explosions.png');
-  bulletImage = loadImage('assets/images/heart.png');
+  bulletImage = loadImage('assets/images/laser.png');
   heartImage = loadImage('assets/images/heart.png');
-  backgroundimage = loadImage("assets/images/bg5.jpg");
+  backgroundimage = loadImage("assets/images/battle_background.jpg");
   mapImage = loadImage("assets/images/map.jpg"); 
-  doublePowerUpImage = loadImage('assets/images/double_powerup.png'); // Load double power-up image
-  triplePowerUpImage = loadImage('assets/images/triple_powerup.png'); // Load triple power-up image
+  doublePowerUpImage = loadImage('assets/images/powerup.png'); // Load double power-up image
+  triplePowerUpImage = loadImage('assets/images/powerup2.png'); // Load triple power-up image
  
   laserSound = loadSound('assets/sounds/laser_shot.wav');
   explosionSound = loadSound('assets/sounds/explosion_sound.wav');

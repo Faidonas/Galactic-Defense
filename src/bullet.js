@@ -2,8 +2,8 @@ class Bullet {
     constructor(x, y) {
       this.x = x;
       this.y = y;
-      this.size = 30;
-      this.speed = 1.5;
+      this.size = 33;
+      this.speed = 2;
       this.isHit = false; // Track if the enemy was hit
     }
   

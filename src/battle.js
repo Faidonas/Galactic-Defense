@@ -35,6 +35,11 @@ function setupBattle(level) {
     stars.push(new Star());
   }
 
+  // Pre-tint the background
+  tintedBackground = createGraphics(width, height);
+  tintedBackground.tint(255, 180); 
+  tintedBackground.image(backgroundimage, 0, 0, width, height);
+
   spawnEnemies(level, wave); // Spawn enemies based on level and wave
 
   startBattleMusic(); // Start background music when the battle begins
@@ -65,7 +70,7 @@ function drawBattleScreen() {
     drawMenuBackground(lastFrame); 
   } else {
     // Continue normal battle flow
-    image(backgroundimage, 0, 0, width, height); // Display the background
+    image(tintedBackground, 0, 0, width, height); // Display the background
 
     spawnHeart();
     spawnPowerUp();
@@ -167,7 +172,7 @@ function drawBattleScreen() {
 }
 
 function spawnPowerUp() {
-  if (random(1) < 0.005) { // 0.5% chance per frame to spawn a power-up
+  if (random(1) < 0.001) { // 1% chance per frame to spawn a power-up
     let x = random(50, width - 50); // Random X position
     powerUps.push(new PowerUp(x, -20)); // Spawn the power-up slightly above the screen
   }
@@ -311,7 +316,7 @@ function checkGameOver() {
 }
 
 function spawnHeart() {
-  if (random(1) < 0.01) { // 1% chance per frame to spawn a heart
+  if (random(1) < 0.001) { // 1% chance per frame to spawn a heart
     let x = random(50, width - 50); // Random X position
     hearts.push(new Heart(x, -20)); // Spawn the heart slightly above the screen
   }
