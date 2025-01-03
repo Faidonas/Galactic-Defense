@@ -17,12 +17,12 @@ class Enemy {
   }
 
   collides(bullet) {
-    const hitboxPadding = 10; // Adjust this value to make the hitbox larger
+    const hitboxPadding = 12; 
     return (
-      bullet.x > this.x - hitboxPadding &&
-      bullet.x < this.x + this.size + hitboxPadding &&
-      bullet.y > this.y - hitboxPadding &&
-      bullet.y < this.y + this.size + hitboxPadding
+      bullet.x > this.x - this.size / 2 - hitboxPadding &&
+      bullet.x < this.x + this.size / 2 + hitboxPadding &&
+      bullet.y > this.y - this.size / 2 - hitboxPadding &&
+      bullet.y < this.y + this.size / 2 + hitboxPadding
     );
   }
 }

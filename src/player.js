@@ -58,9 +58,9 @@ class Player {
       let y = this.y - this.size / 2 - 20;
       let remaining = map(this.powerUpDuration, 0, 600, 0, barWidth);
 
-      fill(255, 0, 0);
+      fill(0, 0, 255); // Background color of the power-up bar (blue)
       rect(x, y, barWidth, barHeight);
-      fill(0, 255, 0);
+      fill(0, 255, 255); // Foreground color of the power-up bar (cyan)
       rect(x, y, remaining, barHeight);
     }
   }
