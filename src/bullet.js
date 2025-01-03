@@ -3,7 +3,7 @@ class Bullet {
       this.x = x;
       this.y = y;
       this.size = 33;
-      this.speed = 2;
+      this.speed = 2.5;
       this.isHit = false; // Track if the enemy was hit
     }
   
