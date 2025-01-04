@@ -1,3 +1,5 @@
+let completedLevels;
+
 function drawMapScreen() {
   // Display the background
   image(mapImage, 0, 0, width, height);
@@ -19,14 +21,17 @@ function drawMapScreen() {
     width / 2,
     height / 4 + 40
   );
+  completedLevels =  lastUnlockedLevel - 1; // Number of levels completed by the player
 
   for (let i = 0; i < totalLevels; i++) {
     let x = width / 2 - totalLevels * 50 + i * 100; // Spread levels horizontally
     let y = height / 2;
 
     // Default color for locked or unlocked levels
-    if (i < lastUnlockedLevel) {
-      fill(129, 117, 0); // Darker blue for unlocked levels
+    if (i < completedLevels) {
+      fill(139, 0, 0);
+    } else if (i < lastUnlockedLevel) {
+      fill(129, 117, 0); // Muted gold for unlocked levels
     } else {
       fill(100, 100, 100, 150); // Semi-transparent gray for locked levels
     }
@@ -51,6 +56,9 @@ function drawMapScreen() {
 
       // Handle click to start level
       if (mouseIsPressed && i < lastUnlockedLevel) {
+        if (buttonClicked.isLoaded()) {
+          buttonClicked.play();
+        }
         currentLevel = i + 1; // Set the current level based on mouse click
         startBattle(currentLevel); // Start the selected level
       }
